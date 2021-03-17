@@ -1,0 +1,1 @@
+exports.AUTH_STORAGE_KEY= '.Da8HD97sn'
