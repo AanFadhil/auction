@@ -11,18 +11,20 @@ import { formatDistanceToNow } from '../../utilities/dateUtil';
 import LinkButton from '../../components/LinkButton';
 import Loading from '../../components/Loading';
 
-const ItemCard = ({ item : { _id, desc, name, thumbnail, startingPrice, closeTime }}) => {
+const ItemCard = ({ item: { _id, desc, name, thumbnail, startingPrice, closeTime } }) => {
     return (
-        <Card className="group shadow-lg overflow-hidden">
-            <div className="overflow-hidden">
+        <Card className="group shadow-lg h-auto flex flex-col">
+            <div className="overflow-hidden inline-block h-60 rounded-t-md">
                 <img src={thumbnail ? thumbnail : ("https://picsum.photos/300?random=" + _id)} className="object-cover w-full h-52 md:h-72 rounded-t-md object-center transform scale-110 group-hover:scale-100 transition duration-300 -translate-y-1 group-hover:translate-y-0 ease-out" />
             </div>
-            <div className="px-4 py-2">
+            <div className="px-4 py-2 inline-block flex-grow">
                 <h2 className="font-bold text-lg">{name}</h2>
                 <h3 className="text-gray-600">{formatMoney(startingPrice)} | {formatDistanceToNow(closeTime)}</h3>
                 <p className="text-sm mt-2 pb-4 text-gray-500">
                     {desc.length > 100 ? desc.substring(0, 50) + '....' : desc}
                 </p>
+            </div>
+            <div className="w-full p-4">
                 <LinkButton to={`/item/${_id}`} className="w-full">Bid Now</LinkButton>
             </div>
         </Card>
@@ -94,18 +96,20 @@ const Home = ({ items, loading, getItems }) => {
 
     return (
         <Layout title="Home">
-            <SearchBox placeholder="Search..." changed={searchChanged} searchDelay={450} />
-
+            <div className="flex flex-col md:flex-row w-full px-4">
+                <SearchBox groupclass="flex-grow" placeholder="Search..." changed={searchChanged} searchDelay={450} />
+            </div>
+            <hr className="my-6" />
             {loading ?
                 <Loading />
                 :
                 <section className="grid grid-cols-1 md:grid-cols-5 px-4 md:px-16 gap-x-4 gap-y-2 md:gap-y-4">
                     {
-                        ((items || {}).data || []).map(item =><ItemCard item={item} key={item._id} />)
+                        ((items || {}).data || []).map(item => <ItemCard item={item} key={item._id} />)
                     }
                 </section>
             }
-            <Pagination totalRecords={listState.totalRecords}
+            <Pagination className="mt-6" totalRecords={listState.totalRecords}
                 pageLimit={listState.pageLimit}
                 pageNeighbours={1} onPageChanged={onPageChange} />
         </Layout>

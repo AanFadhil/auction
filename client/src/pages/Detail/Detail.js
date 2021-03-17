@@ -17,7 +17,8 @@ const Detail = ({ getItemById, loading, item, placeBid }) => {
     const params = useParams()
 
     const [form,setForm] = useState({
-        amount : item.currentTopBid
+        amount : item.currentTopBid,
+        amountIsDirty : false
     })
 
     useEffect(() => {
@@ -40,6 +41,16 @@ const Detail = ({ getItemById, loading, item, placeBid }) => {
         return <Loading />
     }
 
+    const onAmountBlur = () => {
+        setForm(prevState => {
+            if(prevState.amountIsDirty) return {...prevState}
+            else return {
+                ...prevState,
+                amountIsDirty : true
+            }
+        })
+    }
+
     const onPlaceBid = () => {
         placeBid({
             itemId : item._id,
@@ -60,7 +71,7 @@ const Detail = ({ getItemById, loading, item, placeBid }) => {
             })
         }
     }
-    const isAmountError = form.amount <= item.currentTopBid
+    const isAmountError = form.amount <= item.currentTopBid && form.amountIsDirty
     return (
         <Layout title="Item Detail">
             <Card className="flex flex-col md:flex-row pb-4 mx-2 md:mx-0 md:px-4 md:pt-4">
@@ -68,20 +79,21 @@ const Detail = ({ getItemById, loading, item, placeBid }) => {
                 <img src={item.thumbnail} alt={item.name} className="w-full max-h-64 md:w-1/3 md:rounded-md sm:rounded-t-md" />
                 <div className="md:ml-4 md:mr-4 mt-6 md:mt-none px-4">
                     <h1 className="font-bold text-xl">{item.name}</h1>
-                    <div>Starting Price : <span className="text-green-700 font-semibold">{formatMoney(item.startingPrice)}</span></div>
                     <div>Current Bid : <span className="text-green-700 font-semibold">{formatMoney(item.currentTopBid||0)}</span></div>
+                    <div>Starting Price : {formatMoney(item.startingPrice)}</div>
                     <div>Ends in : {formatDistanceToNow(item.closeTime)}</div>
                     <p className="my-3 text-gray-600">{item.desc}</p>
                     <hr />
                     
                     <div className="mt-4 mb-2">
-                        <TextBox groupclass="w-full md:w-40" 
+                        <TextBox groupclass="w-full md:w-40"
+                        onblur={onAmountBlur} 
                         label="place your bid" placeholder="amount" type="number" 
                         value={form.amount} changed={onAmountChanged} hasError={isAmountError} helptext={isAmountError ? 'Invalid amount':null} />
                     </div>
                     
                     <Button className="w-24" clicked={onPlaceBid} 
-                    disabled={isAmountError}
+                    disabled={form.amount <= item.currentTopBid}
                     >Bid</Button>
                 </div>
             </Card>
