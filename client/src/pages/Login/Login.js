@@ -1,9 +1,9 @@
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
-import * as authactions from '../store/actions/auth'
+import * as authactions from '../../store/actions/auth'
 import { useState } from 'react'
-import TextBox from '../components/TextBox';
-import Button from '../components/Button';
+import TextBox from '../../components/TextBox';
+import Button from '../../components/Button';
 const Login = ({ login }) => {
 
     const [form, setForm] = useState({
@@ -43,8 +43,8 @@ const Login = ({ login }) => {
                 <div className="mt-8 space-y-6">
                     <input type="hidden" name="remember" value="true" />
                     <div className="rounded-md shadow-sm -space-y-px">
-                        <TextBox label="Email" value={form.email} changed={onChange} name="email" type="email" />
-                        <TextBox label="Password" value={form.password} changed={onChange} name="password" type="password" />
+                        <TextBox label="Email" groupclass="mb-2" placeholder="Email" value={form.email} changed={onChange} name="email" type="email" />
+                        <TextBox label="Password"  placeholder="Password" value={form.password} changed={onChange} name="password" type="password" />
                     </div>
 
                     <div>

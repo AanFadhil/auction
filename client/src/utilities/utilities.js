@@ -2,14 +2,14 @@ import React from 'react';
 
 export const formatNumber = (x, separator) => {
         if (x)
-                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator || ".");
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator || ",");
         else
                 return x
 }
 
-export const formatMoney = (x, currency = 'Rp', separator) => {
+export const formatMoney = (x, currency = '$', separator) => {
         if (x) {
-                return currency + '' + formatNumber(x, separator) + ',-';
+                return currency + '' + formatNumber(x, separator);
         } else {
                 return '';
         }

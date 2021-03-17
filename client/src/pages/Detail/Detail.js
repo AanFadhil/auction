@@ -1,4 +1,4 @@
-import Layout from '../hoc/layout';
+import Layout from '../../hoc/layout';
 
 const Detail = props => {
 

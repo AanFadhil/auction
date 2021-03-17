@@ -4,19 +4,18 @@ import { connect } from 'react-redux'
 import * as authactions from './store/actions/auth'
 import { isNullOrEmpty, storageGetItem } from './utilities/utilities'
 
-import Login from './pages/Login'
+import Login from './pages/Login/Login'
 import asyncComponent from './hoc/asyncComponent/asyncComponent';
-import Layout from './hoc/layout';
 import { useEffect } from 'react'
 
 const Settings = asyncComponent(() => {
-  return import('./pages/Settings');
+  return import('./pages/Settings/Settings');
 });
 const Detail = asyncComponent(() => {
-  return import('./pages/Detail');
+  return import('./pages/Detail/Detail');
 });
 const Home = asyncComponent(() => {
-  return import('./pages/Home');
+  return import('./pages/Home/Home');
 });
 
 const App = ({ validateToken:validateTokenProps, user, loading }) => {
@@ -44,7 +43,7 @@ const App = ({ validateToken:validateTokenProps, user, loading }) => {
       <Switch>
         <Route path="/settings" exact component={Settings} />
         <Route path="/login" component={Login} />
-        <Route path="/:id" exact component={Detail} />
+        <Route path="/item/:id" exact component={Detail} />
         <Route path="/" exact component={Home} />
       </Switch>
     )
