@@ -27,7 +27,7 @@ router.post('/login',
             });
     })
 
-router.get('/validatetoken', isAuth(), (req, res, next) => {
+router.post('/validatetoken', isAuth(), (req, res, next) => {
     const { email, name, id } = req.userData
 
     res.json({

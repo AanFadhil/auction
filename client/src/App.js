@@ -1,9 +1,13 @@
 import config from './config'
 import { Switch, Route, Redirect, matchPath, useLocation } from 'react-router-dom'
-import { storageGetItem } from './utilities/utilities'
+import { connect } from 'react-redux'
+import * as authactions from './store/actions/auth'
+import { isNullOrEmpty, storageGetItem } from './utilities/utilities'
+
 import Login from './pages/Login'
 import asyncComponent from './hoc/asyncComponent/asyncComponent';
 import Layout from './hoc/layout';
+import { useEffect } from 'react'
 
 const Settings = asyncComponent(() => {
   return import('./pages/Settings');
@@ -15,9 +19,15 @@ const Home = asyncComponent(() => {
   return import('./pages/Home');
 });
 
-const App = props => {
+const App = ({ validateToken:validateTokenProps, user, loading }) => {
 
   const { pathname } = useLocation()
+  const validateToken = validateTokenProps
+  useEffect(() => {
+    if (isNullOrEmpty(user)) {
+      validateToken()
+    }
+  }, [])
 
   const currUrl = pathname
   const isLogin = matchPath(currUrl, {
@@ -25,7 +35,7 @@ const App = props => {
   })
 
   const token = storageGetItem(config.AUTH_STORAGE_KEY)
-  if (props.loading) {
+  if (loading) {
     return (
       <div>Loading...</div>
     )
@@ -46,4 +56,18 @@ const App = props => {
   }
 }
 
-export default App
+
+const mapStateToProps = state => {
+  return {
+    user: state.auth.user,
+    loading: state.auth.loading
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    validateToken: () => dispatch(authactions.validateToken())
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

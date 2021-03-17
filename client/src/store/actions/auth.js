@@ -1,13 +1,13 @@
 import * as actionTypes from './actionTypes'
 import conifg from '../../config'
-import { storageSetItem, storageRemoveItem, setLoading } from '../../../utilities/utilities'
+import { storageSetItem, storageRemoveItem } from '../../utilities/utilities'
 import axios, { changeToken } from '../../axios-helper';
 
 
 export const validateToken = () => {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            setLoading(dispatch,true)
+            
             axios.api.post('/auth/validatetoken')
                 .then(res => {
                     
@@ -41,10 +41,10 @@ export const validateToken = () => {
 export const login = (data) => {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            setLoading(dispatch,true)
+            
             axios.api.post('/auth/login', data)
                 .then(res => {
-                    setLoading(dispatch,false)
+                    
                     if (res.data.token) {
                         console.log('change token > ', res.data.token)
                         storageSetItem(conifg.AUTH_STORAGE_KEY, res.data.token)
@@ -57,7 +57,7 @@ export const login = (data) => {
                     return resolve(res.data)
                 })
                 .catch(err => {
-                    setLoading(dispatch,false)
+                    
                     dispatch({
                         type: actionTypes.LOGIN_FAILED,
                         error: err
@@ -72,7 +72,7 @@ export const login = (data) => {
 
 export const logout = (data) => {
     return dispatch => {
-        storageRemoveItem(conifg.CS_STORAGE_AUTH_KEY)
+        storageRemoveItem(conifg.AUTH_STORAGE_KEY)
         changeToken('')
         dispatch({
             type: actionTypes.LOGOUT
