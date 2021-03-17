@@ -39,8 +39,6 @@ exports.getList = (paging) => {
             sorting.createdAt = -1
         }
 
-        console.log(sorting)
-
         utils.pagingExecute(Item, {
             ...paging,
             filter,
