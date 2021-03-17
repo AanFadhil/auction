@@ -12,6 +12,7 @@ const chalk = require('chalk')
 //routes import
 const authRoutes = require('./controllers/auth')
 const itemRoutes = require('./controllers/item')
+const bidRoutes = require('./controllers/bid')
 
 
 log.info(chalk.blueBright('app starting'))
@@ -34,6 +35,8 @@ app.use((error, req, res, next) => {
 app.use(express.json())
 app.use('/auth', authRoutes)
 app.use('/item', itemRoutes)
+app.use('/bid', bidRoutes)
+
 
 if (process.env.NODE_ENV !== "production")
     process.on('warning', e => console.warn(e.stack))

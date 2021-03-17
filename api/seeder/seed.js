@@ -101,6 +101,7 @@ const seedItems = () => {
                 name:itemName,
                 desc,
                 startingPrice,
+                currentTopBid : startingPrice,
                 closeTime: addHours(today,randomCloseTime()),
                 thumbnail: 'https://placeimg.com/640/480/any/sepia'
             })

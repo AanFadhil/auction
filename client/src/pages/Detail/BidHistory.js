@@ -11,7 +11,8 @@ const HistoryColumn = ({ children, className }) => {
     )
 }
 
-const HistoryRow = ({ bidAt, user, amount }) => {
+const HistoryRow = ({bid : { bidAt, user, amount }}) => {
+    console.log({ bidAt, user, amount });
     return (
         <tr>
 
@@ -30,7 +31,7 @@ const HistoryRow = ({ bidAt, user, amount }) => {
                     </div>
                     <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900">
-                            {user.name}
+                            {(user||{}).name}
                         </div>
                     </div>
                 </div>

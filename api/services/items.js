@@ -6,15 +6,17 @@ const log = require('../logger')
 exports.getById = id => {
     return new Promise((resolve, reject) => {
         Item
-        .findById(id)
-        .select([
-            '-bids.user.password',
-            '-bids.user.email',
-            '-bids.user.maxAutoBidAmount',
-            '-bids.user.currentBidAmount'
-        ])
-        .populate('bids')
-        .populate('bids.user')
+            .findById(id)
+            .populate([
+                {
+                  path: 'bids',
+                  select: '_id amount bidAt',
+                  populate: {
+                    path: 'user',
+                    select: 'name'
+                  }
+                },
+              ])
             .then(res => {
                 resolve(res)
             })

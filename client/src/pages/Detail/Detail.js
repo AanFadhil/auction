@@ -5,9 +5,11 @@ import { connect } from 'react-redux';
 import * as itemsActions from '../../store/actions/items';
 import Loading from '../../components/Loading';
 import Card from '../../components/Card';
+import TextBox from '../../components/TextBox';
 import { formatMoney } from '../../utilities/utilities';
 import { formatDistanceToNow, formatString } from '../../utilities/dateUtil';
 import BidHistory from './BidHistory';
+import Button from '../../components/Button';
 
 const Detail = ({ getItemById, loading, item }) => {
 
@@ -33,11 +35,15 @@ const Detail = ({ getItemById, loading, item }) => {
                 <div className="md:ml-4 md:mr-4 mt-6 md:mt-none px-4">
                     <h1 className="font-bold text-xl">{item.name}</h1>
                     <div>Current Bid : <span className="text-green-700 font-semibold">{formatMoney((item.currentTopBid || item.startingPrice))}</span></div>
-                    <div>Ends in : {"formatDistanceToNow(item.closeTime)"}</div>
+                    <div>Ends in : {formatDistanceToNow(item.closeTime)}</div>
                     <p className="mt-3 text-gray-600">{item.desc}</p>
+                    <div className="mt-8">
+                        <TextBox placeholder="amount" type="number" hasError helptext="test" />
+                    </div>
+                    <Button className="w-32">Bid</Button>
                 </div>
             </Card>
-            <BidHistory bids={item.bids}></BidHistory>
+            <BidHistory bids={item.bids} error={true}></BidHistory>
         </Layout>
     )
 }

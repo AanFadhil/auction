@@ -1,6 +1,6 @@
 import { format, parseISO, addDays as adddays, differenceInDays, formatDistanceToNow as fdtn } from 'date-fns';
 
-export const formatString = (date, strformat) => {
+export const formatString = (date, strformat = "dd MMM yyyy HH:mm:ss") => {
     if (typeof (date) === 'string') {
         let parsed = parseISO(date)
 

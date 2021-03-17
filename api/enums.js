@@ -3,6 +3,12 @@ const itemStatus = {
     CLOSED : "CLOSED"
 }
 
+const bidMadeBy = {
+    USER : "USER",
+    BOT : "BOT"
+}
+
 module.exports = {
-    itemStatus
+    itemStatus,
+    bidMadeBy
 }

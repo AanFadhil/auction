@@ -15,7 +15,7 @@ const ItemCard = ({ item : { _id, desc, name, thumbnail, startingPrice, closeTim
     return (
         <Card className="group shadow-lg overflow-hidden">
             <div className="overflow-hidden">
-                <img src={thumbnail ? thumbnail : ("https://picsum.photos/300?random=" + _id)} className="object-cover w-full h-52 md:h-60 rounded-t-md object-center transform scale-110 group-hover:scale-100 transition duration-300 -translate-y-1 group-hover:translate-y-0 ease-out" />
+                <img src={thumbnail ? thumbnail : ("https://picsum.photos/300?random=" + _id)} className="object-cover w-full h-52 md:h-72 rounded-t-md object-center transform scale-110 group-hover:scale-100 transition duration-300 -translate-y-1 group-hover:translate-y-0 ease-out" />
             </div>
             <div className="px-4 py-2">
                 <h2 className="font-bold text-lg">{name}</h2>
@@ -23,7 +23,7 @@ const ItemCard = ({ item : { _id, desc, name, thumbnail, startingPrice, closeTim
                 <p className="text-sm mt-2 pb-4 text-gray-500">
                     {desc.length > 100 ? desc.substring(0, 50) + '....' : desc}
                 </p>
-                <LinkButton to={`/item/${_id}`}>Bid Now</LinkButton>
+                <LinkButton to={`/item/${_id}`} className="w-full">Bid Now</LinkButton>
             </div>
         </Card>
     )
