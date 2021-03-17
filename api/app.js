@@ -5,8 +5,14 @@ const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const cors = require('cors')
-const log = require('./logger');
+const log = require('./logger')
+const utilities = require('./utils/utilities')
 const chalk = require('chalk')
+
+//routes import
+const authRoutes = require('./controllers/auth')
+const itemRoutes = require('./controllers/item')
+
 
 log.info(chalk.blueBright('app starting'))
 
@@ -25,6 +31,9 @@ app.use((error, req, res, next) => {
     res.status(status).json({ message: message, data: data });
 });
 
+app.use(express.json())
+app.use('/auth', authRoutes)
+app.use('/item', itemRoutes)
 
 if (process.env.NODE_ENV !== "production")
     process.on('warning', e => console.warn(e.stack))

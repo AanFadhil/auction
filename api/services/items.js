@@ -1,0 +1,53 @@
+const utils = require('../utils/utilities')
+const Item = require('../models/item')
+const log = require('../logger')
+
+exports.getList = (paging) => {
+    return new Promise((resolve, reject) => {
+        
+        paging = paging || {}
+
+        let { sort, sortDir,q } = paging
+
+        let filter = {
+            
+        }
+
+        if (q) {
+            filter["$or"] = [
+                { name: { "$regex": q, "$options": "i" } },
+                { desc: { "$regex": q, "$options": "i" } }
+            ]
+        }
+
+        let fieldselect = [
+            'name',
+            'closeTime',
+            'currentTopBid',
+            'startingPrice',
+            'status',
+            'desc',
+            'thumbnail',
+            'bidderCount'
+        ]
+
+        let sorting = {}
+
+        if(sort){
+            sorting[sort] = sortDir
+        } else {
+            sorting.createdAt = -1
+        }
+
+        console.log(sorting)
+
+        utils.pagingExecute(Item, {
+            ...paging,
+            filter,
+            fieldselect,
+            sort:sorting
+        })
+            .then(resolve)
+            .catch(err => reject(err))
+    })
+}

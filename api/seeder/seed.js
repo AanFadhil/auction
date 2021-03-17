@@ -3,6 +3,7 @@ const User = require('../models/user')
 const dotenv = require('dotenv').config()
 const log = require('../logger')
 const mongoose = require('mongoose')
+const { addHours } = require('date-fns')
 
 const seedUser = () => {
 
@@ -42,7 +43,68 @@ const seedItems = () => {
     return new Promise((resolve, reject) => {
         log.info('items seeding started')
 
+        const itemAges = [
+            "100 y.o",
+            "700 y.o",
+            "500 y.o",
+            "350 y.o",
+            "850 y.o",
+            "100 BC",
+            "200 BC",
+            "300 BC"
+        ]
+
+        const itemAttr = [
+            "Wooden",
+            "Antique",
+            "Bronze",
+            "Romanian",
+            "Renaissance",
+            "Van Gogh",
+            "Arabic",
+            "Ancient Japanese",
+            "Ottoman"
+        ]
+
+        const items = [
+            "Tea Pot",
+            "Pottery",
+            "Dinning Set",
+            "Tools",
+            "Dress",
+            "Sword",
+            "Table",
+            "Lamp",
+            "Bag",
+            "Statue",
+            "Armor",
+            "Bow and Arrow",
+            "Chair"
+        ]
+
+        const descTemplate = '{name}, consectetur adipiscing elit. Vestibulum commodo ut ligula eu pulvinar. Phasellus a imperdiet nunc. Integer consectetur quis sapien nec interdum'
+
         const itemsData = []
+
+        const randomInt = () => Math.ceil(Math.random() * 100000)
+        const randomPrice = () => ((Math.ceil(Math.random() * 100))*50)+500
+        const randomCloseTime = () => Math.ceil(Math.random() * (10 * 24))
+        const today = new Date()
+        for (let index = 0; index < 100; index++) {
+            const itemName = `${itemAges[randomInt() % itemAges.length]} ${itemAttr[randomInt() % itemAttr.length]} ${items[randomInt() % items.length]}`
+
+            const desc = descTemplate.replace(/{name}/g, itemName)
+
+            const startingPrice = randomPrice()
+            
+            itemsData.push({
+                name:itemName,
+                desc,
+                startingPrice,
+                closeTime: addHours(today,randomCloseTime()),
+                thumbnail: 'https://placeimg.com/640/480/any/sepia'
+            })
+        }
 
         Item
             .insertMany(itemsData)

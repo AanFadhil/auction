@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const enums = require('../enums')
 const Schema = mongoose.Schema
 
 const ItemSchema = new Schema({
@@ -13,10 +14,13 @@ const ItemSchema = new Schema({
         }],
         default : []
     },
-    status: String,
+    status: {
+        type : String,
+        default : enums.itemStatus.OPEN
+    },
     desc : String,
     thumbnail : String,
     bidderCount : Number
-})
+},{timestamps: true})
 
 module.exports = mongoose.model('Item', ItemSchema)
