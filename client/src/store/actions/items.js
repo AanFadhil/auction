@@ -43,3 +43,40 @@ export const getItemList = ({ page, pageSize, search, sort, sortdir }) => {
 
     }
 }
+
+
+
+export const getItemById = ({ id }) => {
+    return dispatch => {
+        return new Promise((resolve, reject) => {
+            dispatch({ type: actionTypes.GET_ITEM_BY_ID })
+            axios.api.get('/item/'+id)
+                .then(res => {
+
+                    if (res) {
+                        dispatch({
+                            type: actionTypes.GET_ITEM_BY_ID_SUCCESS,
+                            item: res.data
+                        })
+                        resolve(res.data)
+                    } else {
+                        const err = new Error('Unauthorized')
+                        dispatch({
+                            type: actionTypes.GET_ITEM_BY_ID_FAILED,
+                            error: err
+                        })
+                        reject(err)
+                    }
+                })
+                .catch(err => {
+
+                    dispatch({
+                        type: actionTypes.GET_ITEM_BY_ID_FAILED,
+                        error: err
+                    })
+                    reject(err)
+                })
+        })
+
+    }
+}

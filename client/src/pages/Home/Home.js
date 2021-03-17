@@ -9,6 +9,25 @@ import Button from '../../components/Button';
 import { formatMoney } from '../../utilities/utilities';
 import { formatDistanceToNow } from '../../utilities/dateUtil';
 import LinkButton from '../../components/LinkButton';
+import Loading from '../../components/Loading';
+
+const ItemCard = ({ item : { _id, desc, name, thumbnail, startingPrice, closeTime }}) => {
+    return (
+        <Card className="group shadow-lg overflow-hidden">
+            <div className="overflow-hidden">
+                <img src={thumbnail ? thumbnail : ("https://picsum.photos/300?random=" + _id)} className="object-cover w-full h-52 md:h-60 rounded-t-md object-center transform scale-110 group-hover:scale-100 transition duration-300 -translate-y-1 group-hover:translate-y-0 ease-out" />
+            </div>
+            <div className="px-4 py-2">
+                <h2 className="font-bold text-lg">{name}</h2>
+                <h3 className="text-gray-600">{formatMoney(startingPrice)} | {formatDistanceToNow(closeTime)}</h3>
+                <p className="text-sm mt-2 pb-4 text-gray-500">
+                    {desc.length > 100 ? desc.substring(0, 50) + '....' : desc}
+                </p>
+                <LinkButton to={`/item/${_id}`}>Bid Now</LinkButton>
+            </div>
+        </Card>
+    )
+}
 
 const Home = ({ items, loading, getItems }) => {
     const [listState, setListState] = useState({
@@ -59,7 +78,7 @@ const Home = ({ items, loading, getItems }) => {
     const searchChanged = ({ value }) => {
         getItems({
             ...listState,
-            search : value
+            search: value
         })
     }
 
@@ -78,29 +97,11 @@ const Home = ({ items, loading, getItems }) => {
             <SearchBox placeholder="Search..." changed={searchChanged} searchDelay={450} />
 
             {loading ?
-                <div>Loading</div>
+                <Loading />
                 :
                 <section className="grid grid-cols-1 md:grid-cols-5 px-4 md:px-16 gap-x-4 gap-y-2 md:gap-y-4">
                     {
-                        ((items || {}).data || []).map(({ _id, desc, name, thumbnail, startingPrice, closeTime }) => (
-                            <div className="p-2" key={_id}>
-
-                                <Card className="group shadow-lg overflow-hidden">
-                                    <div className="overflow-hidden">
-                                        <img src={thumbnail ? thumbnail : ("https://picsum.photos/300?random=" + _id)} className="object-cover w-full h-52 md:h-60 rounded-t-md object-center transform scale-110 group-hover:scale-100 transition duration-300 -translate-y-1 group-hover:translate-y-0 ease-out" />
-                                    </div>
-                                    <div className="px-4 py-2">
-                                        <h2 className="font-bold text-lg">{name}</h2>
-                                        <h3 className="text-gray-600">{formatMoney(startingPrice)} | {formatDistanceToNow(closeTime)}</h3>
-                                        <p className="text-sm mt-2 pb-4 text-gray-500">
-                                            {desc.length > 100 ? desc.substring(0,50)+'....':desc}
-                                        </p>
-                                        <LinkButton to={`/item/${_id}`}>Bid Now</LinkButton>
-                                    </div>
-                                </Card>
-                            </div>
-                        ))
-
+                        ((items || {}).data || []).map(item =><ItemCard item={item} key={item._id} />)
                     }
                 </section>
             }

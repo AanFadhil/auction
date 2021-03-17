@@ -3,26 +3,28 @@ import produce from 'immer'
 
 const initialState = {
     loading: {
-        items: true
+        items: true,
+        item: true
     },
-    items: {}
+    items: {},
+    item: {}
 };
 
 
-const getArchivedOrders = (state, action) => {
+const getItems = (state, action) => {
     return produce(state, draft => {
         draft.loading.items = true
     });
 }
 
-const getArchivedOrdersSuccess = (state, action) => {
+const getItemsSuccess = (state, action) => {
     return produce(state, draft => {
         draft.items = action.items
         draft.loading.items = false
     });
 };
 
-const getArchivedOrdersFail = (state, action) => {
+const getItemsFail = (state, action) => {
     return produce(state, draft => {
         draft.loading.items = false;
         draft.items = [];
@@ -30,11 +32,35 @@ const getArchivedOrdersFail = (state, action) => {
 };
 
 
+const getItemById = (state, action) => {
+    return produce(state, draft => {
+        draft.loading.item = true
+    });
+}
+
+const getItemByIdSuccess = (state, action) => {
+    return produce(state, draft => {
+        draft.item = action.item
+        draft.loading.item = false
+    });
+};
+
+const getItemByIdFail = (state, action) => {
+    return produce(state, draft => {
+        draft.loading.item = false;
+        draft.item = [];
+    });
+};
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.GET_ITEMS: return getArchivedOrders(state, action);
-        case actionTypes.GET_ITEMS_SUCCESS: return getArchivedOrdersSuccess(state, action);
-        case actionTypes.GET_ITEMS_FAILED: return getArchivedOrdersFail(state, action);
+        case actionTypes.GET_ITEMS: return getItems(state, action);
+        case actionTypes.GET_ITEMS_SUCCESS: return getItemsSuccess(state, action);
+        case actionTypes.GET_ITEMS_FAILED: return getItemsFail(state, action);
+        
+        case actionTypes.GET_ITEM_BY_ID: return getItemById(state, action);
+        case actionTypes.GET_ITEM_BY_ID_SUCCESS: return getItemByIdSuccess(state, action);
+        case actionTypes.GET_ITEM_BY_ID_FAILED: return getItemByIdFail(state, action);
         default: return state;
     }
 };

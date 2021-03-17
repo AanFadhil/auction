@@ -60,7 +60,7 @@ const Pagination = (props) => {
         setState({ ...state, currentPage })
         onPageChanged(paginationData)
     }
-
+    
     useEffect(() => {
         let { totalRecords, pageLimit, pageNeighbours } = props;
 

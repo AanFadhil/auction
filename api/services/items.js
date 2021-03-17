@@ -1,16 +1,36 @@
 const utils = require('../utils/utilities')
 const Item = require('../models/item')
+const Bid = require('../models/bid')
 const log = require('../logger')
+
+exports.getById = id => {
+    return new Promise((resolve, reject) => {
+        Item
+        .findById(id)
+        .select([
+            '-bids.user.password',
+            '-bids.user.email',
+            '-bids.user.maxAutoBidAmount',
+            '-bids.user.currentBidAmount'
+        ])
+        .populate('bids')
+        .populate('bids.user')
+            .then(res => {
+                resolve(res)
+            })
+            .catch(reject)
+    })
+}
 
 exports.getList = (paging) => {
     return new Promise((resolve, reject) => {
-        
+
         paging = paging || {}
 
-        let { sort, sortDir,q } = paging
+        let { sort, sortDir, q } = paging
 
         let filter = {
-            
+
         }
 
         if (q) {
@@ -33,7 +53,7 @@ exports.getList = (paging) => {
 
         let sorting = {}
 
-        if(sort){
+        if (sort) {
             sorting[sort] = sortDir
         } else {
             sorting.createdAt = -1
@@ -43,7 +63,7 @@ exports.getList = (paging) => {
             ...paging,
             filter,
             fieldselect,
-            sort:sorting
+            sort: sorting
         })
             .then(resolve)
             .catch(err => reject(err))
