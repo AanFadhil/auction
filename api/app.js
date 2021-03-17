@@ -1,0 +1,44 @@
+const path = require('path')
+const dotenv = require('dotenv').config()
+const express = require('express')
+const helmet = require('helmet')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const cors = require('cors')
+const log = require('./logger');
+const chalk = require('chalk')
+
+log.info(chalk.blueBright('app starting'))
+
+const app = express()
+
+app.use(cors())
+app.use(helmet())
+
+app.use('/static', express.static(path.join(__dirname, 'public/static')));
+
+
+app.use((error, req, res, next) => {
+    const status = error.statusCode || 500;
+    const message = error.message;
+    const data = error.data;
+    res.status(status).json({ message: message, data: data });
+});
+
+
+if (process.env.NODE_ENV !== "production")
+    process.on('warning', e => console.warn(e.stack))
+
+
+
+mongoose
+    .connect(
+        process.env.MONGO_CONNECTION_STRING
+        , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+    .then(result => {
+        const port = process.env.port || 5000
+        var http = require('http').createServer(app);
+        
+        http.listen(port, () => log.info(`api is listening to port ${port}`));
+    })
+    .catch(err => log.error(err));
