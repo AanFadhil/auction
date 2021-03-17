@@ -7,6 +7,7 @@ const TextBox = ({
     textarea,
     type,
     changed,
+    className,
     append,
     prepend,
     label,
@@ -46,10 +47,10 @@ const TextBox = ({
         }
     }
     return (
-        <div className={[groupclass,]}>
+        <div className={[groupclass].join(' ')}>
             {label ? <label htmlFor={id} className="">{label}</label> : null}
             <input
-                className={`${border} appearance-none rounded-md relative block w-full px-3 py-2 border  placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                className={`${className} ${border} appearance-none rounded-md relative block w-full px-3 py-2 border  placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                 type={type}
                 rows={rows || 5}
                 id={id} aria-describedby={'helper' + id}

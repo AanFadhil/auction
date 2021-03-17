@@ -11,13 +11,15 @@ import thunk from 'redux-thunk';
 
 import authReducer from './store/reducers/auth'
 import itemReducer from './store/reducers/item'
+import bidReducer from './store/reducers/bid'
 
 
 const composeEnhancers = (process.env.NODE_ENV !== 'production' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null) || compose;
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  item: itemReducer
+  item: itemReducer,
+  bid: bidReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(

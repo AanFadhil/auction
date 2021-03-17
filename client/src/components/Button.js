@@ -9,9 +9,9 @@ const Button = ({ loading: isloading, type, disabled, className: classnameProp, 
     const [confirming, setConfirming] = React.useState(null)
     //const [loading, setLoading] = React.useState(false)
 
-    const className = ["group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
+    const className = ["group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ",
         classnameProp,
-        disabled ? '' : ''
+        disabled ? 'bg-gray-400 cursor-auto' : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
     ];
 
     const onClick = evt => {

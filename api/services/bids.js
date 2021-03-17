@@ -24,7 +24,7 @@ exports.manualPalceBid = ({itemId,userId,amount}) => {
                 item = res
                 
                 const now = new Date()
-                console.log(res.currentTopBid,now < res.closeTime)
+                
                 if(res && amount > res.currentTopBid && now < res.closeTime){
                     let newBid = new Bid({
                         item : new ObjectId(itemId),

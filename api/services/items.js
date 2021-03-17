@@ -2,6 +2,7 @@ const utils = require('../utils/utilities')
 const Item = require('../models/item')
 const Bid = require('../models/bid')
 const log = require('../logger')
+const _ = require('underscore')
 
 exports.getById = id => {
     return new Promise((resolve, reject) => {
@@ -17,8 +18,12 @@ exports.getById = id => {
                   }
                 },
               ])
+            .lean()
             .then(res => {
-                resolve(res)
+                resolve({
+                    ...res,
+                    bids : _.sortBy(res.bids,'bidAt').reverse()
+                })
             })
             .catch(reject)
     })
