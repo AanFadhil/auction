@@ -18,13 +18,24 @@ const ItemSchema = new Schema({
         }],
         default: []
     },
+    autoBidders: {
+        type: [{
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }],
+        default: []
+    },
     status: {
         type: String,
         default: enums.itemStatus.OPEN
     },
     desc: String,
     thumbnail: String,
-    bidderCount: Number
+    bidderCount: Number,
+    autoBidActive: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true })
 
 module.exports = mongoose.model('Item', ItemSchema)

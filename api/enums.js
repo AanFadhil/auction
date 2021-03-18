@@ -16,5 +16,7 @@ const dataJobs = {
 module.exports = {
     itemStatus,
     bidMadeBy,
-    dataJobs
+    dataJobs,
+    AUTOBID_DELAY : 1000 * 2,
+    AUTO_BID_INCREMET : 1
 }

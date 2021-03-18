@@ -59,3 +59,13 @@ exports.manualPalceBid = ({ itemId, userId, amount }) => {
             .catch(reject)
     })
 }
+
+
+exports.getUserCurrentBids = (userId) => {
+    return new Promise((resolve, reject) => {
+        Bid.find({
+            user: ObjectId(userId),
+            "item.status": enums.itemStatus.OPEN
+        })
+    })
+}
