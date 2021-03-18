@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router'
+import { useHistory,  } from 'react-router'
+import { Link } from 'react-router-dom'
 import * as authactions from '../store/actions/auth'
 
-const Layout = ({ children, title, user, logout }) => {
+const Layout = ({ children, title, user, logout, onClick }) => {
     const [showProfile, setShowProfile] = useState(false)
     const [showMobileMenu, setShowMobileMenu] = useState(false)
 
@@ -25,7 +26,7 @@ const Layout = ({ children, title, user, logout }) => {
     }
 
     return (
-        <div className="bg-gray-100" onClick={() => setShowProfile(false)}>
+        <div className="bg-gray-100" onClick={() => {setShowProfile(false);(onClick||(()=>{}))()}}>
             <nav className="bg-gray-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
@@ -35,8 +36,8 @@ const Layout = ({ children, title, user, logout }) => {
                             </div>
                             <div className="hidden md:block">
                                 <div className="ml-10 flex items-baseline space-x-4">
-
-                                    <a href="#" className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                                    <Link to="/"  className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Home</Link>
+                                    {/* <a href="#"></a> */}
 
                                 </div>
                             </div>
@@ -55,9 +56,8 @@ const Layout = ({ children, title, user, logout }) => {
                                     </div>
                                     {showProfile ?
                                         <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
-
-                                            <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
-
+                                            <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</Link>
+                                            
                                             <a href="#" onClick={onSignout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
                                         </div> : null}
                                 </div>
@@ -80,13 +80,11 @@ const Layout = ({ children, title, user, logout }) => {
 
                 <div className={["md:hidden",showMobileMenu ? '':'hidden'].join(' ')} id="mobile-menu">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-
-                        <a href="#" className="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
-
+                        <Link to="/" className="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium">Home</Link>
                     </div>
                     <div className="pt-4 pb-3 border-t border-gray-700">
                         <div className="flex items-center px-5">
-                            <div className="flex-shrink-0">
+                            <div className="flex-shrink-0"  onClick={onShowProfile} >
                                 <img className="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
                             </div>
                             <div className="ml-3">
@@ -103,9 +101,7 @@ const Layout = ({ children, title, user, logout }) => {
                         </div>
                         {showProfile ?
                             <div className="mt-3 px-2 space-y-1">
-
-                                <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">Settings</a>
-
+                                <Link to="/settings" className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">Settings</Link>
                                 <a href="#" onClick={onSignout} className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">Sign out</a>
                             </div> : null}
                     </div>

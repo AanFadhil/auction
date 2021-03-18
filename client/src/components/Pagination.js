@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import Card from './Card';
 
 const LEFT_PAGE = 'LEFT';
 const RIGHT_PAGE = 'RIGHT';
@@ -8,11 +8,6 @@ const RIGHT_PAGE = 'RIGHT';
 
 const NEXT_PAGE = 'NEXT';
 const PREV_PAGE = 'PREV';
-
-const DISABLED_NEXT_PAGE = 'DISABLED_NEXT';
-const DISABLED_PREV_PAGE = 'DISABLED_PREV';
-const PAD_LEFT = 'PAD_LEFT';
-const PAD_RIGHT = 'PAD_RIGHT';
 
 /**
  * Helper method for creating a range of numbers
@@ -31,7 +26,7 @@ const range = (from, to, step = 1) => {
 }
 
 const Pagination = (props) => {
-    
+
     const [state, setState] = useState({
         pageLimit: null,
         totalRecords: null,
@@ -60,7 +55,7 @@ const Pagination = (props) => {
         setState({ ...state, currentPage })
         onPageChanged(paginationData)
     }
-    
+
     useEffect(() => {
         let { totalRecords, pageLimit, pageNeighbours } = props;
 
@@ -81,7 +76,7 @@ const Pagination = (props) => {
             totalPagesCount,
             currentPage: 1
         }
-        
+
         setState(newState)
         gotoPage(1)
     }, [props.totalRecords])
@@ -207,11 +202,30 @@ const Pagination = (props) => {
 
     const { currentPage } = state;
     const pages = fetchPageNumbers();
-    
+
+    const from = ((currentPage - 1) * props.pageLimit)+1;
+    const toPage = currentPage * props.pageLimit ;
+
     return (
 
-        <div className={[props.className,"bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"]}>
-            <div className="sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <Card className={[props.className, "bg-white px-4 py-3 flex items-center justify-between sm:px-6"].join(' ')}>
+            <div className="flex-1 flex justify-between sm:hidden">
+                <a href="#" onClick={handlePrev} className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500">
+                    Previous
+                    </a>
+                <a href="#" onClick={handleNext} className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500">
+                    Next
+                    </a>
+            </div>
+            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+
+                <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p className="text-sm text-gray-700">
+                        Showing <span className="font-medium">{from}</span> to <span className="font-medium">{toPage}</span> of <span className="font-medium">{props.totalRecords}</span> results
+                    </p>
+                    </div>
+                </div>
                 <div>
                     <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
 
@@ -237,60 +251,23 @@ const Pagination = (props) => {
                                     <span className="sr-only">Next</span>
 
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                                     </svg>
                                 </a>
                             );
-
-                            // if (page === DISABLED_NEXT_PAGE) return (
-                            //     <li key={index} >
-                            //         <div className={[styles.item, styles.disabled].join(' ')}>
-                            //             <div className="" href="#" aria-label="Previous">
-                            //                 <i className="fa fa-angle-right"></i>
-                            //                 <span className="sr-only">Previous</span>
-                            //             </div>
-                            //         </div>
-                            //     </li>
-                            // );
 
                             if (page === PREV_PAGE) return (
                                 <a key={index} href="#" onClick={handlePrev} className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                     <span className="sr-only">Previous</span>
 
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                        <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
                                 </a>
                             );
 
-
-                            // if (page === DISABLED_PREV_PAGE) return (
-                            //     <li key={index}>
-                            //         <div className={[styles.item, styles.disabled].join(' ')}>
-                            //             <div className="" href="#" aria-label="Previous">
-                            //                 <i className="fa fa-angle-left"></i>
-                            //                 <span className="sr-only">Previous</span>
-                            //             </div>
-                            //         </div>
-                            //     </li>
-                            // );
-
-
-                            // if (page === PAD_LEFT) return (
-                            //     <li key={index} className={styles.left}>
-
-                            //     </li>
-                            // );
-
-                            // if (page === PAD_RIGHT) return (
-                            //     <li key={index} className={styles.right}>
-
-                            //     </li>
-                            // );
-
-
                             return (
-                                <a href="#" key={index} onClick={currentPage === page ? (() => { }) : handleClick(page)} className={[currentPage === page ? 'bg-blue-300' : 'bg-white', "relative inline-flex items-center  px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50"].join(' ')}>
+                                <a href="#" key={index} onClick={currentPage === page ? (() => { }) : handleClick(page)} className={[currentPage === page ? 'bg-gray-300 cursor-default' : 'bg-white hover:bg-gray-50', "relative inline-flex items-center  px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700"].join(' ')}>
                                     {page}
                                 </a>
                             );
@@ -300,7 +277,7 @@ const Pagination = (props) => {
                 </div>
             </div>
 
-        </div>
+        </Card>
     );
 
 
