@@ -4,6 +4,7 @@ const Item = require('../models/item')
 const User = require('../models/user')
 const log = require('../logger')
 const enums = require('../enums')
+const worker = require('../worker/worker')
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId
 
@@ -52,6 +53,7 @@ exports.manualPalceBid = ({ itemId, userId, amount }) => {
                 }
             })
             .then(res => {
+                worker.updateUserCurrentBidAmount.add({userId})
                 resolve(bidObj)
             })
             .catch(reject)
