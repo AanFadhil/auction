@@ -19,7 +19,7 @@ updateUserCurrentBidAmount.process(datajobs.updateUserBidAmount)
 
 
 let autoBid = new Queue(enums.dataJobs.AUTO_BID, config);
-autoBid.process(datajobs.autoBid)
+autoBid.process(datajobs.placeAutoBid)
 
 autoBid.on('completed', (job, result) => {
 

@@ -139,14 +139,14 @@ exports.placeAutoBid = ({
                 return Promise.all([user.save(), Promise.resolve(null)])
             }
 
-            let newBid = new Bid({
+            let newBidObj = new Bid({
                 item: new ObjectId(itemId),
                 user: new ObjectId(userId),
                 bidAt: new Date(),
                 amount: amount,
                 madeBy: enums.bidMadeBy.BOT
             })
-            return Promise.all([user.save(), newBid.save()])
+            return Promise.all([user.save(), newBidObj.save()])
 
         })
         .then(([user, newBid]) => {
