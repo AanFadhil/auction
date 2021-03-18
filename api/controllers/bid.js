@@ -22,9 +22,25 @@ router.post('/',
     ],
     (req, res, next) => {
         bidSvc.manualPalceBid({
-            amount : req.body.amount,
-            itemId : req.body.itemId,
-            userId : req.userData.id
+            amount: req.body.amount,
+            itemId: req.body.itemId,
+            userId: req.userData.id
+        })
+            .then(result => {
+                res.status(200).json(result)
+            })
+            .catch(next)
+    }
+)
+
+
+router.post('/autobid',
+    isAuth({}),
+    (req, res, next) => {
+        bidSvc.setAutoBid({
+            itemId: req.body.itemId,
+            userId: req.userData.id,
+            autoBid: req.body.autobid,
         })
             .then(result => {
                 res.status(200).json(result)

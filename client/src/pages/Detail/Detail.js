@@ -11,14 +11,16 @@ import { formatMoney } from '../../utilities/utilities';
 import { formatDistanceToNow, formatString } from '../../utilities/dateUtil';
 import BidHistory from './BidHistory';
 import Button from '../../components/Button';
+import CheckBox from '../../components/Checkbox';
 
-const Detail = ({ getItemById, loading, item, placeBid, user }) => {
+const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid }) => {
 
     const params = useParams()
 
     const [form, setForm] = useState({
         amount: item.currentTopBid,
-        amountIsDirty: false
+        amountIsDirty: false,
+        autoBid: (item.autoBidders || []).includes(user.id)
     })
 
     useEffect(() => {
@@ -28,13 +30,15 @@ const Detail = ({ getItemById, loading, item, placeBid, user }) => {
     useEffect(() => {
         getItemById(params.id)
     }, [params.id])
-
+    
     useEffect(() => {
 
         setForm({
-            ...form,
-            amount: item.currentTopBid
+            amount: item.currentTopBid,
+            amountIsDirty: false,
+            autoBid: (item.autoBidders || []).includes(user.id)
         })
+
     }, [item._id])
 
     if (loading) {
@@ -71,8 +75,24 @@ const Detail = ({ getItemById, loading, item, placeBid, user }) => {
             })
         }
     }
-    const isAmountError = form.amount <= item.currentTopBid && form.amountIsDirty
-    const isTopBidder = (item.highestBidder||{})._id === user.id
+
+    const onAutoBidChanged = evt => {
+        
+        setAutoBid({
+            autobid: evt.target.checked,
+            itemId: item._id
+        })
+
+        setForm({
+            ...form,
+            autoBid: evt.target.checked
+        })
+
+    }
+
+    const isAmountError = form.amount <= item.currentTopBid && form.amountIsDirty && !form.autoBid
+    const isTopBidder = (item.highestBidder || {})._id === user.id
+    const autoBidCb = <CheckBox key={item._id} className="mt-0" checked={form.autoBid} changed={onAutoBidChanged} label="Auto Bid" />
     return (
         <Layout title="Item Detail">
             <Card className="flex flex-col md:flex-row pb-4 mx-2 md:mx-0 md:px-4 md:pt-4">
@@ -86,21 +106,26 @@ const Detail = ({ getItemById, loading, item, placeBid, user }) => {
                     <p className="my-3 text-gray-600">{item.desc}</p>
                     <hr />
                     {isTopBidder ?
-                        <div className="mt-6 font-semibold text-green-600">You are the current highest bidder</div>
+                        <>
+                            <div className="mt-6 font-semibold text-green-600">You are the current highest bidder</div>
+                        </>
                         :
                         <>
                             <div className="mt-4 mb-2">
                                 <TextBox groupclass="w-full md:w-40"
                                     onblur={onAmountBlur}
+                                    disabled={form.autoBid}
                                     label="place your bid" placeholder="amount" type="number"
                                     value={form.amount} changed={onAmountChanged} hasError={isAmountError} helptext={isAmountError ? 'Invalid amount' : null} />
                             </div>
-
-                            <Button className="w-24" clicked={onPlaceBid}
-                                disabled={form.amount <= item.currentTopBid}
-                            >Bid</Button>
+                            <div className="flex flex-row gap-x-6">
+                                <Button className="w-24" clicked={onPlaceBid}
+                                    disabled={form.amount <= item.currentTopBid || form.autoBid}>Bid</Button>
+                                
+                            </div>
                         </>
                     }
+                    {autoBidCb}
                 </div>
             </Card>
             <BidHistory bids={item.bids} error={true}></BidHistory>
@@ -120,7 +145,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         getItemById: id => dispatch(itemsActions.getItemById({ id })),
-        placeBid: data => dispatch(bidActions.placeBid(data))
+        placeBid: data => dispatch(bidActions.placeBid(data)),
+        setAutoBid: ({ autobid, itemId }) => dispatch(bidActions.setAutoBid({ autobid, itemId }))
     };
 };
 

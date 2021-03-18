@@ -4,7 +4,7 @@ const Bid = require('../models/bid')
 const log = require('../logger')
 const _ = require('lodash')
 
-exports.getById = id => {
+exports.getById = ({id,userId}) => {
     return new Promise((resolve, reject) => {
         Item
             .findById(id)
@@ -26,7 +26,8 @@ exports.getById = id => {
             .then(res => {
                 resolve({
                     ...res,
-                    bids : _.orderBy(res.bids,['bidAt'],['desc'])
+                    bids : _.orderBy(res.bids,['bidAt'],['desc']),
+                    autoBidders : (res.autoBidders||[]).filter(t => t.toString() === userId)
                 })
             })
             .catch(reject)

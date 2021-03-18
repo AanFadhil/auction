@@ -22,10 +22,12 @@ let autoBid = new Queue(enums.dataJobs.AUTO_BID, config);
 autoBid.process(datajobs.placeAutoBid)
 
 autoBid.on('completed', (job, result) => {
-
+    log.debug(`auto bid completed for ${job.data.itemId}`)
+    log.debug(`checking next auto bid`)
     datajobs.continueAutoBid({ lastJobData: job.data })
         .then(res => {
             if (res.continue) {
+                log.debug(`auto bid continue`)
                 const { itemId, nextBidder, bidderCount } = res
                 autoBid.add({ itemId, nextBidder, bidderCount }, { delay: enums.AUTOBID_DELAY })
             } else {

@@ -17,7 +17,7 @@ router.get('/',
 router.get('/:id',
     isAuth({}),
     (req, res, next) => {
-        itemsSvc.getById(req.params.id)
+        itemsSvc.getById({id:req.params.id,userId:req.userData.id})
         .then(result => {
             res.status(200).json(result)
         })

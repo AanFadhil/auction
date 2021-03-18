@@ -38,3 +38,39 @@ export const placeBid = ({ amount, itemId }) => {
 
     }
 }
+
+
+export const setAutoBid = ({ autobid, itemId }) => {
+    return dispatch => {
+        return new Promise((resolve, reject) => {
+            dispatch({ type: actionTypes.SET_AUTO_BID })
+            axios.api.post('/bid/autobid',{ autobid, itemId })
+                .then(res => {
+
+                    if (res) {
+                        dispatch({
+                            type: actionTypes.SET_AUTO_BID_SUCCESS,
+                            newbid: res.data
+                        })
+                        resolve(res.data)
+                    } else {
+                        const err = new Error('Unauthorized')
+                        dispatch({
+                            type: actionTypes.SET_AUTO_BID_FAILED,
+                            error: err
+                        })
+                        reject(err)
+                    }
+                })
+                .catch(err => {
+
+                    dispatch({
+                        type: actionTypes.SET_AUTO_BID_FAILED,
+                        error: err
+                    })
+                    reject(err)
+                })
+        })
+
+    }
+}

@@ -7,6 +7,7 @@ const enums = require('../enums')
 const worker = require('../worker/worker')
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId
+const _ = require('lodash')
 
 exports.getUserCurrentBids = (userId) => {
     return new Promise((resolve, reject) => {
@@ -15,6 +16,10 @@ exports.getUserCurrentBids = (userId) => {
             "item.status": enums.itemStatus.OPEN
         })
     })
+}
+
+const startAutoBid = (itemId) => {
+    
 }
 
 exports.manualPalceBid = ({ itemId, userId, amount }) => {
@@ -53,6 +58,17 @@ exports.manualPalceBid = ({ itemId, userId, amount }) => {
                 }
             })
             .then(res => {
+                const resObj = res.toJSON()
+                console.log(resObj.autoBidActive,resObj.autoBidders);
+                if(!resObj.autoBidActive && resObj.autoBidders.length > 0){
+                    log.debug('starting auto bid')
+                    worker.autoBid.add({ 
+                        itemId, 
+                        nextBidder : {id: resObj.autoBidders[0].toString(), index: 0}, 
+                        bidderCount: resObj.autoBidders.length 
+                    }, { delay: enums.AUTOBID_DELAY })    
+                }
+
                 worker.updateUserCurrentBidAmount.add({userId})
                 resolve(bidObj)
             })
@@ -61,11 +77,33 @@ exports.manualPalceBid = ({ itemId, userId, amount }) => {
 }
 
 
-exports.getUserCurrentBids = (userId) => {
+exports.setAutoBid = ({ itemId,userId, autoBid }) => {
     return new Promise((resolve, reject) => {
-        Bid.find({
-            user: ObjectId(userId),
-            "item.status": enums.itemStatus.OPEN
+        Item.findById(itemId)
+        .then(res => {
+            let resObj = res.toJSON()
+            if(res){
+                let newBidders = [...resObj.autoBidders]
+                
+                if(autoBid && newBidders.findIndex(t => t.toString() === userId) < 0){
+                    log.debug('set new autobidder')
+                    newBidders.push(ObjectId(userId))
+                } 
+                
+                if(!autoBid) {
+                    log.debug('remove autobidder')
+                    newBidders = newBidders.filter(t => t.toString() != userId)
+                }
+                
+                res.autoBidders = newBidders
+                return res.save()
+            } else {
+                return Promise.reject(utils.createError("Item not found",400))
+            }
         })
+        .then(res => {
+            resolve(res.toJSON())
+        })
+        .catch(reject)
     })
 }
