@@ -10,7 +10,6 @@ const log = require('../logger')
 router.get('/',
     isAuth({}),
     (req, res, next) => {
-        worker.autoBid.add({coba:1})
         settingsSvc.getUserSettings({userId:req.userData.id})
         .then(result => {
             res.status(200).json(result)
@@ -23,7 +22,7 @@ router.get('/',
 router.post('/maxautobid',
     isAuth({}),
     [
-        body('maxAmount')
+        body('maxAutoBidAmount')
             .isNumeric()
             .bail()
             .withMessage('Please enter a valid amount')
@@ -31,7 +30,7 @@ router.post('/maxautobid',
     (req, res, next) => {
         settingsSvc.setMaxAutoBidAmount({
             userId: req.userData.id,
-            maxAmount : req.body.maxAmount
+            maxAmount : req.body.maxAutoBidAmount
         })
         .then(result => {
             res.status(200).json(result)
