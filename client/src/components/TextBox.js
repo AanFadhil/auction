@@ -28,7 +28,6 @@ const TextBox = ({
 }) => {
     const id = idProps || componentId('textBox');
     const I = textarea ? `textarea` : `input`
-    console.log(hasError);
     const border = hasError ? 'border-red-300' : 'border-gray-300'
 
     const onChange = evt => {

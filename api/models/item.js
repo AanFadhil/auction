@@ -4,23 +4,27 @@ const Schema = mongoose.Schema
 
 const ItemSchema = new Schema({
     name: String,
-    closeTime : Date,
+    closeTime: Date,
     currentTopBid: Number,
-    startingPrice : Number,
-    bids : {
-        type : [{
+    highestBidder: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    startingPrice: Number,
+    bids: {
+        type: [{
             type: Schema.Types.ObjectId,
             ref: "Bid"
         }],
-        default : []
+        default: []
     },
     status: {
-        type : String,
-        default : enums.itemStatus.OPEN
+        type: String,
+        default: enums.itemStatus.OPEN
     },
-    desc : String,
-    thumbnail : String,
-    bidderCount : Number
-},{timestamps: true})
+    desc: String,
+    thumbnail: String,
+    bidderCount: Number
+}, { timestamps: true })
 
 module.exports = mongoose.model('Item', ItemSchema)

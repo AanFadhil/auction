@@ -17,6 +17,10 @@ exports.getById = id => {
                     select: 'name'
                   }
                 },
+                {
+                    path: 'highestBidder',
+                    select: '_id name'
+                },
               ])
             .lean()
             .then(res => {

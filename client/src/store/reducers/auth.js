@@ -36,8 +36,11 @@ const login = (state, action) => {
 }
 
 const loginSuccess = (state, action) => {
+    console.log(action);
     return produce(state, draft => {
+        const { id, email , name} = action.user
         draft.loading = false
+        draft.user = { id, email , name}
     });
 };
 

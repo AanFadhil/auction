@@ -46,7 +46,6 @@ export const login = (data) => {
                 .then(res => {
                     
                     if (res.data.token) {
-                        console.log('change token > ', res.data.token)
                         storageSetItem(conifg.AUTH_STORAGE_KEY, res.data.token)
                         changeToken(res.data.token)
                     }

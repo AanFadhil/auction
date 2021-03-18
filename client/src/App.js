@@ -22,6 +22,13 @@ const App = ({ validateToken:validateTokenProps, user, loading }) => {
 
   const { pathname } = useLocation()
   const validateToken = validateTokenProps
+  
+  const token = storageGetItem(config.AUTH_STORAGE_KEY)
+  useEffect(() => {
+    if (isNullOrEmpty(user)) {
+      validateToken()
+    }
+  }, [token])
   useEffect(() => {
     if (isNullOrEmpty(user)) {
       validateToken()
@@ -33,7 +40,6 @@ const App = ({ validateToken:validateTokenProps, user, loading }) => {
     path: "/login"
   })
 
-  const token = storageGetItem(config.AUTH_STORAGE_KEY)
   if (loading) {
     return (
       <div>Loading...</div>

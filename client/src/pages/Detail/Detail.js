@@ -12,13 +12,13 @@ import { formatDistanceToNow, formatString } from '../../utilities/dateUtil';
 import BidHistory from './BidHistory';
 import Button from '../../components/Button';
 
-const Detail = ({ getItemById, loading, item, placeBid }) => {
+const Detail = ({ getItemById, loading, item, placeBid, user }) => {
 
     const params = useParams()
 
-    const [form,setForm] = useState({
-        amount : item.currentTopBid,
-        amountIsDirty : false
+    const [form, setForm] = useState({
+        amount: item.currentTopBid,
+        amountIsDirty: false
     })
 
     useEffect(() => {
@@ -30,10 +30,10 @@ const Detail = ({ getItemById, loading, item, placeBid }) => {
     }, [params.id])
 
     useEffect(() => {
-        
+
         setForm({
             ...form,
-            amount : item.currentTopBid
+            amount: item.currentTopBid
         })
     }, [item._id])
 
@@ -43,35 +43,36 @@ const Detail = ({ getItemById, loading, item, placeBid }) => {
 
     const onAmountBlur = () => {
         setForm(prevState => {
-            if(prevState.amountIsDirty) return {...prevState}
+            if (prevState.amountIsDirty) return { ...prevState }
             else return {
                 ...prevState,
-                amountIsDirty : true
+                amountIsDirty: true
             }
         })
     }
 
     const onPlaceBid = () => {
         placeBid({
-            itemId : item._id,
-            amount : form.amount
+            itemId: item._id,
+            amount: form.amount
         }).then(res => getItemById(params.id))
     }
 
     const onAmountChanged = evt => {
-        if(evt.target.value <= item.currentTopBid ){
+        if (evt.target.value <= item.currentTopBid) {
             setForm({
                 ...form,
-                amount : evt.target.value
+                amount: evt.target.value
             })
         } else {
             setForm({
                 ...form,
-                amount : evt.target.value
+                amount: evt.target.value
             })
         }
     }
     const isAmountError = form.amount <= item.currentTopBid && form.amountIsDirty
+    const isTopBidder = (item.highestBidder||{})._id === user.id
     return (
         <Layout title="Item Detail">
             <Card className="flex flex-col md:flex-row pb-4 mx-2 md:mx-0 md:px-4 md:pt-4">
@@ -79,22 +80,27 @@ const Detail = ({ getItemById, loading, item, placeBid }) => {
                 <img src={item.thumbnail} alt={item.name} className="w-full max-h-64 md:w-1/3 md:rounded-md sm:rounded-t-md" />
                 <div className="md:ml-4 md:mr-4 mt-6 md:mt-none px-4">
                     <h1 className="font-bold text-xl">{item.name}</h1>
-                    <div>Current Bid : <span className="text-green-700 font-semibold">{formatMoney(item.currentTopBid||0)}</span></div>
+                    <div>Current Bid : <span className="text-green-700 font-semibold">{formatMoney(item.currentTopBid || 0)}</span></div>
                     <div>Starting Price : {formatMoney(item.startingPrice)}</div>
                     <div>Ends in : {formatDistanceToNow(item.closeTime)}</div>
                     <p className="my-3 text-gray-600">{item.desc}</p>
                     <hr />
-                    
-                    <div className="mt-4 mb-2">
-                        <TextBox groupclass="w-full md:w-40"
-                        onblur={onAmountBlur} 
-                        label="place your bid" placeholder="amount" type="number" 
-                        value={form.amount} changed={onAmountChanged} hasError={isAmountError} helptext={isAmountError ? 'Invalid amount':null} />
-                    </div>
-                    
-                    <Button className="w-24" clicked={onPlaceBid} 
-                    disabled={form.amount <= item.currentTopBid}
-                    >Bid</Button>
+                    {isTopBidder ?
+                        <div className="mt-6 font-semibold text-green-600">You are the current highest bidder</div>
+                        :
+                        <>
+                            <div className="mt-4 mb-2">
+                                <TextBox groupclass="w-full md:w-40"
+                                    onblur={onAmountBlur}
+                                    label="place your bid" placeholder="amount" type="number"
+                                    value={form.amount} changed={onAmountChanged} hasError={isAmountError} helptext={isAmountError ? 'Invalid amount' : null} />
+                            </div>
+
+                            <Button className="w-24" clicked={onPlaceBid}
+                                disabled={form.amount <= item.currentTopBid}
+                            >Bid</Button>
+                        </>
+                    }
                 </div>
             </Card>
             <BidHistory bids={item.bids} error={true}></BidHistory>
@@ -106,14 +112,15 @@ const mapStateToProps = state => {
     return {
         item: state.item.item,
         loading: state.item.loading.item,
-        bidloading: state.bid.loading.bid
+        bidloading: state.bid.loading.bid,
+        user: state.auth.user
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         getItemById: id => dispatch(itemsActions.getItemById({ id })),
-        placeBid : data => dispatch(bidActions.placeBid(data))
+        placeBid: data => dispatch(bidActions.placeBid(data))
     };
 };
 
