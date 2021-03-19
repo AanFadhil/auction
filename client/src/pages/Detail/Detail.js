@@ -13,6 +13,7 @@ import BidHistory from './BidHistory';
 import Button from '../../components/Button';
 import CheckBox from '../../components/Checkbox';
 import CountDown from './CountDown';
+import {subscribeToNewBid, unsubscribeToNewBid } from '../../socket/socket';
 
 const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid }) => {
 
@@ -30,6 +31,13 @@ const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid }) => {
 
     useEffect(() => {
         getItemById(params.id)
+        subscribeToNewBid(params.id,data => {
+            console.log('new bid notif');
+            getItemById(params.id)
+        })
+        return () => {
+            unsubscribeToNewBid(params.id)
+        }
     }, [params.id])
     
     useEffect(() => {

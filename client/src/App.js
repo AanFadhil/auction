@@ -3,6 +3,7 @@ import { Switch, Route, Redirect, matchPath, useLocation } from 'react-router-do
 import { connect } from 'react-redux'
 import * as authactions from './store/actions/auth'
 import { isNullOrEmpty, storageGetItem } from './utilities/utilities'
+import { connectSocket } from './socket/socket'
 
 import Login from './pages/Login/Login'
 import asyncComponent from './hoc/asyncComponent/asyncComponent';
@@ -18,22 +19,22 @@ const Home = asyncComponent(() => {
   return import('./pages/Home/Home');
 });
 
-const App = ({ validateToken:validateTokenProps, user, loading }) => {
+const App = ({ validateToken: validateTokenProps, user, loading }) => {
 
   const { pathname } = useLocation()
   const validateToken = validateTokenProps
-  
+
+
   const token = storageGetItem(config.AUTH_STORAGE_KEY)
+
   useEffect(() => {
     if (isNullOrEmpty(user)) {
       validateToken()
     }
+
+    if (token) connectSocket(token, config.API_BASE_URL)
+
   }, [token])
-  useEffect(() => {
-    if (isNullOrEmpty(user)) {
-      validateToken()
-    }
-  }, [])
 
   const currUrl = pathname
   const isLogin = matchPath(currUrl, {

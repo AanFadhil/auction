@@ -68,7 +68,7 @@ exports.manualPalceBid = ({ itemId, userId, amount }) => {
                         bidderCount: resObj.autoBidders.length 
                     }, { delay: enums.AUTOBID_DELAY })    
                 }
-
+                worker.newBidItemNotif.add({itemId})
                 worker.updateUserCurrentBidAmount.add({userId})
                 resolve(bidObj)
             })

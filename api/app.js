@@ -8,6 +8,7 @@ const cors = require('cors')
 const log = require('./logger')
 const utilities = require('./utils/utilities')
 const chalk = require('chalk')
+const socket = require('./socket/socket')
 
 //routes import
 const authRoutes = require('./controllers/auth')
@@ -52,7 +53,7 @@ mongoose
     .then(result => {
         const port = process.env.port || 5000
         var http = require('http').createServer(app);
-        
+        socket.start(http)
         http.listen(port, () => log.info(`api is listening to port ${port}`));
     })
     .catch(err => log.error(err));
