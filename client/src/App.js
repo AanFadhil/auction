@@ -1,23 +1,79 @@
+import config from './config'
+import { Switch, Route, Redirect, matchPath, useLocation } from 'react-router-dom'
+import { connect } from 'react-redux'
+import * as authactions from './store/actions/auth'
+import { isNullOrEmpty, storageGetItem } from './utilities/utilities'
+import { connectSocket } from './socket/socket'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Login from './pages/Login/Login'
+import asyncComponent from './hoc/asyncComponent/asyncComponent';
+import { useEffect } from 'react'
+
+const Settings = asyncComponent(() => {
+  return import('./pages/Settings/Settings');
+});
+const Detail = asyncComponent(() => {
+  return import('./pages/Detail/Detail');
+});
+const Home = asyncComponent(() => {
+  return import('./pages/Home/Home');
+});
+
+const App = ({ validateToken: validateTokenProps, user, loading }) => {
+
+  const { pathname } = useLocation()
+  const validateToken = validateTokenProps
+
+
+  const token = storageGetItem(config.AUTH_STORAGE_KEY)
+
+  useEffect(() => {
+    if (isNullOrEmpty(user)) {
+      validateToken()
+    }
+
+    if (token) connectSocket(token, config.API_BASE_URL)
+
+  }, [token])
+
+  const currUrl = pathname
+  const isLogin = matchPath(currUrl, {
+    path: "/login"
+  })
+
+  if (loading) {
+    return (
+      <div>Loading...</div>
+    )
+  } else if ((token && typeof (token) !== 'undefined') || isLogin) {
+    return (
+      <Switch>
+        <Route path="/settings" exact component={Settings} />
+        <Route path="/login" component={Login} />
+        <Route path="/item/:id" exact component={Detail} />
+        <Route path="/" exact component={Home} />
+      </Switch>
+    )
+  } else {
+
+    return (
+      <Redirect to={'/login'} />
+    )
+  }
 }
 
-export default App;
+
+const mapStateToProps = state => {
+  return {
+    user: state.auth.user,
+    loading: state.auth.loading
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    validateToken: () => dispatch(authactions.validateToken())
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

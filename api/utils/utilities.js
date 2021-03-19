@@ -9,6 +9,8 @@ var client = redis.createClient({
         host: config.REDIS_HOST,
 })
 
+
+
 exports.getRedisClient = () => {
         return client || redis.createClient({
                 port: config.REDIS_PORT,
@@ -132,14 +134,13 @@ exports.pagingExecute = (model, { filter, fieldselect, perPage, page, sort, popu
         query = query
                 .select(fieldselect)
 
-        perPage = perPage || 100
+        perPage = perPage || config.DEFAULT_PAGE_SIZE
         page = (page || 1) - 1
 
-        if (!out) {
-                query = query.limit(perPage)
-                        .skip(perPage * page)
-                        .sort(sort)
-        }
+        query = query.limit(perPage)
+                .sort(sort)
+                .skip(perPage * page)
+
 
         return new Promise((resolve, reject) => {
                 Promise.all([
@@ -173,3 +174,4 @@ exports.arrayInclude = (array, checker) => {
 
         return found
 }
+

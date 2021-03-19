@@ -5,8 +5,17 @@ const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const cors = require('cors')
-const log = require('./logger');
+const log = require('./logger')
+const utilities = require('./utils/utilities')
 const chalk = require('chalk')
+const socket = require('./socket/socket')
+
+//routes import
+const authRoutes = require('./controllers/auth')
+const itemRoutes = require('./controllers/item')
+const bidRoutes = require('./controllers/bid')
+const settingsRoutes = require('./controllers/settings')
+
 
 log.info(chalk.blueBright('app starting'))
 
@@ -25,6 +34,12 @@ app.use((error, req, res, next) => {
     res.status(status).json({ message: message, data: data });
 });
 
+app.use(express.json())
+app.use('/auth', authRoutes)
+app.use('/item', itemRoutes)
+app.use('/bid', bidRoutes)
+app.use('/settings', settingsRoutes)
+
 
 if (process.env.NODE_ENV !== "production")
     process.on('warning', e => console.warn(e.stack))
@@ -34,11 +49,11 @@ if (process.env.NODE_ENV !== "production")
 mongoose
     .connect(
         process.env.MONGO_CONNECTION_STRING
-        , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+        , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
     .then(result => {
         const port = process.env.port || 5000
         var http = require('http').createServer(app);
-        
+        socket.start(http)
         http.listen(port, () => log.info(`api is listening to port ${port}`));
     })
     .catch(err => log.error(err));

@@ -13,6 +13,6 @@ const BidSchema = new Schema({
     bidAt: Date,
     amount : Number,
     madeBy : String
-})
+},{timestamps: true})
 
 module.exports = mongoose.model('Bid', BidSchema)

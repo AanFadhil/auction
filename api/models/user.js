@@ -12,7 +12,12 @@ const UserSchema = new Schema({
     currentBidAmount :  {
         type : Number,
         default : 0
-    }
-})
+    },
+    currentAutoBidAmount :  {
+        type : Number,
+        default : 0
+    },
+    profilePict : String
+},{timestamps: true})
 
 module.exports = mongoose.model('User', UserSchema)
