@@ -12,14 +12,16 @@ const seedUser = () => {
 
         const userData = [
             {
-                name: "John Doe",
-                email: "johndoe@auction.com",
-                password: "john123"
+                name: "user1",
+                email: "user1@auction.com",
+                password: "user1",
+                profilePict : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
             },
             {
-                name: "Smith",
-                email: "smith@auction.com",
-                password: "smith123"
+                name: "user2",
+                email: "user2@auction.com",
+                password: "user2",
+                profilePict : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'
             }
         ]
 

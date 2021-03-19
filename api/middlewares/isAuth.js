@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 module.exports = (opt) => {
     opt = opt || {}
-    return (req, res, next) => {
+    return async (req, res, next) => {
         const authHeader = req.get('Authorization');
         if (!authHeader) {
             const error = new Error('Not authenticated.');

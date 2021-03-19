@@ -64,7 +64,7 @@ exports.getList = (paging) => {
         ]
 
         let sorting = {}
-        log.debug('sort by : ',sort,sortDir)
+        
         if (sort) {
             sorting[sort] = sortDir
         } else {
@@ -79,5 +79,32 @@ exports.getList = (paging) => {
         })
             .then(resolve)
             .catch(err => reject(err))
+    })
+}
+
+exports.getBidsHistory = ({itemId}) => {
+    return new Promise((resolve, reject) => {
+        Item
+            .findById(itemId)
+            .populate([
+                {
+                  path: 'bids',
+                  select: '_id amount bidAt',
+                  populate: {
+                    path: 'user',
+                    select: 'name profilePict'
+                  }
+                }
+              ])
+              
+            .select('bids')
+            .lean()
+            .then(res => {
+                resolve({
+                    ...res,
+                    bids : _.orderBy(res.bids,['bidAt'],['desc'])
+                })
+            })
+            .catch(reject)
     })
 }

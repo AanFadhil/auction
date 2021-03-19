@@ -38,9 +38,9 @@ const login = (state, action) => {
 const loginSuccess = (state, action) => {
     console.log(action);
     return produce(state, draft => {
-        const { id, email , name} = action.user
+        const { id, email , name, profilePict} = action.user
         draft.loading = false
-        draft.user = { id, email , name}
+        draft.user = { id, email , name, profilePict}
     });
 };
 

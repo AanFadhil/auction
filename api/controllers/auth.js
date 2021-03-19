@@ -29,12 +29,17 @@ router.post('/login',
 
 router.post('/validatetoken', isAuth(), (req, res, next) => {
     const { email, name, id } = req.userData
-
-    res.json({
-        email, 
-        name, 
-        id
+    authSvc.getUserById(id)
+    .then(result => {
+        res.json({
+            ...result,
+            email, 
+            name, 
+            id: result._id
+        })
     })
+    .catch(next)
+    
 
 })
 

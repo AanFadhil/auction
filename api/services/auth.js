@@ -19,6 +19,7 @@ exports.login = ({ email, password }) => {
                         id: res._id.toString(),
                         email: res.email,
                         name: res.name,
+                        profilePict : res.profilePict,
                         token
                     })
 
@@ -28,5 +29,16 @@ exports.login = ({ email, password }) => {
             })
             .catch(reject)
 
+    })
+}
+
+exports.getUserById = id => {
+    return new Promise((resolve, reject) => {
+
+        User.findById(id)
+        .select(['_id','name','email','currentBidAmount','profilePict'])
+        .lean()
+        .then(resolve)
+        .catch(reject)
     })
 }
