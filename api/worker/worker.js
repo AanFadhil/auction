@@ -28,7 +28,8 @@ autoBid.process(datajobs.placeAutoBid)
 autoBid.on('completed', (job, result) => {
     log.debug(`auto bid completed for ${job.data.itemId}`)
     log.debug(`sending notif new bid for ${job.data.itemId}`)
-    newBidItemNotif.add({itemId:job.data.itemId})
+    
+    newBidItemNotif.add({itemId:job.data.itemId })
     log.debug(`checking next auto bid`)
     datajobs.continueAutoBid({ lastJobData: job.data })
         .then(res => {

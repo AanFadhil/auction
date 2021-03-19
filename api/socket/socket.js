@@ -21,7 +21,7 @@ exports.start = (http) => {
 
     log.info('WS : socket connected to redis');
     io.on('connection', (socket) => {
-
+        
         socket.on('register', token => {
             try {
                 const decoded = jwt.verify(token, process.env.TOKEN_SECRET)

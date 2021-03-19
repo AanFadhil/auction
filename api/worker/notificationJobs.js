@@ -8,7 +8,12 @@ const log = require('../logger')
 const enums = require('../enums')
 
 exports.newBidNotif = (job, done) => {
-    const { itemId } = job.data
+    const { itemId, highestBidder, currentTopBid } = job.data
     log.debug('sending new bid notif '+itemId)
-    io().emmit('newbid_'+itemId)
+    io().emit('newbid_'+itemId,{
+        itemId,
+        highestBidder,
+        currentTopBid
+    })
+    done()
 }

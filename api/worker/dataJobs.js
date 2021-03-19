@@ -180,10 +180,13 @@ exports.placeAutoBid = ({
             }
 
         })
-        .then(res => done())
+        .then(res => {
+            let objItem = res.toJSON()
+            done()
+        })
         .catch(err => {
             console.error(err)
-            done()
+            
         })
 
 }

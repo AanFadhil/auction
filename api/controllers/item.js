@@ -24,4 +24,15 @@ router.get('/:id',
     }
 )
 
+
+router.get('/:id/bidhistory',
+    isAuth({}),
+    (req, res, next) => {
+        itemsSvc.getBidsHistory({ itemId : req.params.id})
+        .then(result => {
+            res.status(200).json(result)
+        })
+    }
+)
+
 module.exports = router

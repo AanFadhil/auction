@@ -97,7 +97,7 @@ exports.getBidsHistory = ({itemId}) => {
                 }
               ])
               
-            .select('bids')
+            .select('bids highestBidder currentTopBid')
             .lean()
             .then(res => {
                 resolve({

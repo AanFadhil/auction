@@ -18,14 +18,11 @@ exports.getUserCurrentBids = (userId) => {
     })
 }
 
-const startAutoBid = (itemId) => {
-    
-}
-
 exports.manualPalceBid = ({ itemId, userId, amount }) => {
     return new Promise((resolve, reject) => {
         let item = null
         let bidObj = null
+        
         Item.findById(itemId)
             .populate('bids')
             .then(res => {
@@ -59,7 +56,7 @@ exports.manualPalceBid = ({ itemId, userId, amount }) => {
             })
             .then(res => {
                 const resObj = res.toJSON()
-                console.log(resObj.autoBidActive,resObj.autoBidders);
+                
                 if(!resObj.autoBidActive && resObj.autoBidders.length > 0){
                     log.debug('starting auto bid')
                     worker.autoBid.add({ 
@@ -68,6 +65,7 @@ exports.manualPalceBid = ({ itemId, userId, amount }) => {
                         bidderCount: resObj.autoBidders.length 
                     }, { delay: enums.AUTOBID_DELAY })    
                 }
+                
                 worker.newBidItemNotif.add({itemId})
                 worker.updateUserCurrentBidAmount.add({userId})
                 resolve(bidObj)

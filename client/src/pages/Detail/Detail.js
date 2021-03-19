@@ -13,9 +13,9 @@ import BidHistory from './BidHistory';
 import Button from '../../components/Button';
 import CheckBox from '../../components/Checkbox';
 import CountDown from './CountDown';
-import {subscribeToNewBid, unsubscribeToNewBid } from '../../socket/socket';
+import { subscribeToNewBid, unsubscribeToNewBid } from '../../socket/socket';
 
-const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid }) => {
+const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid, updateItemBids }) => {
 
     const params = useParams()
 
@@ -31,15 +31,16 @@ const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid }) => {
 
     useEffect(() => {
         getItemById(params.id)
-        subscribeToNewBid(params.id,data => {
-            console.log('new bid notif');
-            getItemById(params.id)
+        subscribeToNewBid(params.id, data => {
+            console.log('new bid notif',data);
+            if(data.itemId === params.id)
+                updateItemBids(data.itemId)
         })
         return () => {
             unsubscribeToNewBid(params.id)
         }
     }, [params.id])
-    
+
     useEffect(() => {
 
         setForm({
@@ -86,7 +87,7 @@ const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid }) => {
     }
 
     const onAutoBidChanged = evt => {
-        
+
         setAutoBid({
             autobid: evt.target.checked,
             itemId: item._id
@@ -97,6 +98,13 @@ const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid }) => {
             autoBid: evt.target.checked
         })
 
+    }
+
+    const addBid = addition => {
+        setForm({
+            ...form,
+            amount: form.amount + addition
+        })
     }
 
     const isAmountError = form.amount <= item.currentTopBid && form.amountIsDirty && !form.autoBid
@@ -121,16 +129,22 @@ const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid }) => {
                         :
                         <>
                             <div className="mt-4 mb-2">
-                                <TextBox groupclass="w-full md:w-40"
+                                <TextBox groupclass="w-full md:w-52"
                                     onblur={onAmountBlur}
                                     disabled={form.autoBid}
                                     label="place your bid" placeholder="amount" type="number"
                                     value={form.amount} changed={onAmountChanged} hasError={isAmountError} helptext={isAmountError ? 'Invalid amount' : null} />
+                                <div className="flex flex-row gap-x-2 w-full md:w-52 content-arround mt-2">
+                                    <Button size="sm" clicked={() => addBid(10)}>+ $10</Button>
+                                    <Button size="sm" clicked={() => addBid(50)}>+ $50</Button>
+                                    <Button size="sm" clicked={() => addBid(100)}>+ $100</Button>
+                                    <Button size="sm" clicked={() => addBid(500)}>+ $500</Button>
+                                </div>
                             </div>
                             <div className="flex flex-row gap-x-6">
                                 <Button className="w-24" clicked={onPlaceBid}
                                     disabled={form.amount <= item.currentTopBid || form.autoBid}>Bid</Button>
-                                
+
                             </div>
                         </>
                     }
@@ -155,7 +169,8 @@ const mapDispatchToProps = dispatch => {
     return {
         getItemById: id => dispatch(itemsActions.getItemById({ id })),
         placeBid: data => dispatch(bidActions.placeBid(data)),
-        setAutoBid: ({ autobid, itemId }) => dispatch(bidActions.setAutoBid({ autobid, itemId }))
+        setAutoBid: ({ autobid, itemId }) => dispatch(bidActions.setAutoBid({ autobid, itemId })),
+        updateItemBids: itemId => dispatch(itemsActions.updateItemBids({itemId}))
     };
 };
 

@@ -50,7 +50,7 @@ export const getItemById = ({ id }) => {
     return dispatch => {
         return new Promise((resolve, reject) => {
             dispatch({ type: actionTypes.GET_ITEM_BY_ID })
-            axios.api.get('/item/'+id)
+            axios.api.get('/item/' + id)
                 .then(res => {
 
                     if (res) {
@@ -79,4 +79,41 @@ export const getItemById = ({ id }) => {
         })
 
     }
+}
+
+export const updateItemBids = ({ itemId}) => {
+    return dispatch => {
+        dispatch({
+            type: actionTypes.UPDATE_ITEM_BID
+        })
+        return new Promise((resolve, reject) => {
+            axios.api.get('/item/' + itemId + '/bidhistory')
+                .then(res => {
+
+                    if (res) {
+                        dispatch({
+                            type: actionTypes.UPDATE_ITEM_BID_SUCCESS,
+                            item: res.data
+                        })
+                        resolve(res.data)
+                    } else {
+                        const err = new Error('Unauthorized')
+                        dispatch({
+                            type: actionTypes.UPDATE_ITEM_BID_FAILED,
+                            error: err
+                        })
+                        reject(err)
+                    }
+                })
+                .catch(err => {
+
+                    dispatch({
+                        type: actionTypes.UPDATE_ITEM_BID_FAILED,
+                        error: err
+                    })
+                    reject(err)
+                })
+        })
+    }
+
 }
