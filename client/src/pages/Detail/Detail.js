@@ -32,7 +32,7 @@ const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid, update
     useEffect(() => {
         getItemById(params.id)
         subscribeToNewBid(params.id, data => {
-            console.log('new bid notif',data);
+            
             if(data.itemId === params.id)
                 updateItemBids(data.itemId)
         })
