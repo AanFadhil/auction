@@ -8,10 +8,11 @@ import Loading from '../../components/Loading';
 import Card from '../../components/Card';
 import TextBox from '../../components/TextBox';
 import { formatMoney } from '../../utilities/utilities';
-import { formatDistanceToNow, formatString } from '../../utilities/dateUtil';
+import { formatDistanceToNow, formatString, toDate } from '../../utilities/dateUtil';
 import BidHistory from './BidHistory';
 import Button from '../../components/Button';
 import CheckBox from '../../components/Checkbox';
+import CountDown from './CountDown';
 
 const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid }) => {
 
@@ -102,7 +103,7 @@ const Detail = ({ getItemById, loading, item, placeBid, user, setAutoBid }) => {
                     <h1 className="font-bold text-xl">{item.name}</h1>
                     <div>Current Bid : <span className="text-green-700 font-semibold">{formatMoney(item.currentTopBid || 0)}</span></div>
                     <div>Starting Price : {formatMoney(item.startingPrice)}</div>
-                    <div>Ends in : {formatDistanceToNow(item.closeTime)}</div>
+                    <div>Ends in : <CountDown end={toDate(item.closeTime)} /></div>
                     <p className="my-3 text-gray-600">{item.desc}</p>
                     <hr />
                     {isTopBidder ?

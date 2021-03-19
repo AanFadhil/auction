@@ -64,7 +64,7 @@ exports.getList = (paging) => {
         ]
 
         let sorting = {}
-
+        log.debug('sort by : ',sort,sortDir)
         if (sort) {
             sorting[sort] = sortDir
         } else {

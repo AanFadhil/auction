@@ -6,7 +6,7 @@ import Card from '../../components/Card';
 import * as itemsActions from '../../store/actions/items';
 import Pagination from '../../components/Pagination';
 import { formatMoney } from '../../utilities/utilities';
-import { formatDistanceToNow } from '../../utilities/dateUtil';
+import { formatDistanceToNow, toDate } from '../../utilities/dateUtil';
 import LinkButton from '../../components/LinkButton';
 import Loading from '../../components/Loading';
 
@@ -18,7 +18,7 @@ const ItemCard = ({ item: { _id, desc, name, thumbnail, startingPrice, closeTime
             </div>
             <div className="px-4 py-2 inline-block flex-grow">
                 <h2 className="font-bold text-lg h-16">{name}</h2>
-                <h3 className="text-gray-600">{formatMoney(startingPrice)} | {formatDistanceToNow(closeTime)}</h3>
+                <h3 className="text-gray-600">{formatMoney(startingPrice)} | {toDate(closeTime) > new Date() ? formatDistanceToNow(closeTime): <span className="text-red-600">Closed</span>}</h3>
                 <p className="text-sm mt-2 pb-4 text-gray-500">
                     {desc.length > 100 ? desc.substring(0, 50) + '....' : desc}
                 </p>
@@ -132,7 +132,7 @@ const Home = ({ items, loading, getItems }) => {
 
     return (
         <Layout title="Home" onClick={() => setShowSort(false)}>
-            <Card className="flex flex-col flex-wrap md:flex-row space-be w-auto p-4 content-center mx-2 md:mx-0">
+            <Card className="flex flex-col flex-wrap md:flex-row space-be w-auto p-4 content-center mx-2 md:mx-0 mb-8">
                 <div className="leading-10 flex-grow">Find our best antique collection </div>
                 <SearchBox groupclass=" w-full md:w-1/2" placeholder="Search..." changed={searchChanged} searchDelay={450} />
                 <div className="ml-3 relative">
@@ -152,7 +152,7 @@ const Home = ({ items, loading, getItems }) => {
                         </div> : null}
                 </div>
             </Card>
-            <hr className="my-6" />
+            
             {loading ?
                 <Loading />
                 :
