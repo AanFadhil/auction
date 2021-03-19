@@ -16,6 +16,7 @@ exports.login = ({ email, password }) => {
                     }, process.env.TOKEN_SECRET)
 
                     resolve({
+                        success : true,
                         id: res._id.toString(),
                         email: res.email,
                         name: res.name,
@@ -24,7 +25,10 @@ exports.login = ({ email, password }) => {
                     })
 
                 } else {
-                    resolve(null)
+                    resolve({
+                        success : false,
+                        message : "Invalid email or password"
+                    })
                 }
             })
             .catch(reject)

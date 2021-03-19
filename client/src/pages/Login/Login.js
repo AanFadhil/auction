@@ -8,7 +8,8 @@ const Login = ({ login }) => {
 
     const [form, setForm] = useState({
         email: '',
-        password: ''
+        password: '',
+        message : ''
     })
 
     const onChange = evt => {
@@ -22,7 +23,14 @@ const Login = ({ login }) => {
     const onSignin = () => {
         login(form)
             .then(data => {
-                history.push('/')
+                if (data.success) {
+                    history.push('/')
+                } else {
+                    setForm({
+                        ...form,
+                        message : data.message
+                    })
+                }
             })
             .catch(err => {
                 if (err.response) {
@@ -36,15 +44,16 @@ const Login = ({ login }) => {
             <div className="max-w-md w-full space-y-8">
                 <div>
                     <img className="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 w-full">
                         Sign in to your account
                     </h2>
                 </div>
                 <div className="mt-8 space-y-6">
                     <input type="hidden" name="remember" value="true" />
+                    <h2 className="font-semibold text-red-700 text-center">{form.message}</h2>
                     <div className="rounded-md shadow-sm -space-y-px">
                         <TextBox label="Email" groupclass="mb-2" placeholder="Email" value={form.email} changed={onChange} name="email" type="email" />
-                        <TextBox label="Password"  placeholder="Password" value={form.password} changed={onChange} name="password" type="password" />
+                        <TextBox label="Password" placeholder="Password" value={form.password} changed={onChange} name="password" type="password" />
                     </div>
 
                     <div>

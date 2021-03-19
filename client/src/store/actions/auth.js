@@ -45,14 +45,21 @@ export const login = (data) => {
             axios.api.post('/auth/login', data)
                 .then(res => {
                     
-                    if (res.data.token) {
+                    if (res.data.success) {
                         storageSetItem(conifg.AUTH_STORAGE_KEY, res.data.token)
                         changeToken(res.data.token)
+
+                        dispatch({
+                            type: actionTypes.LOGIN_SUCCESS,
+                            user: res.data
+                        });
+                    } else {
+                        dispatch({
+                            type: actionTypes.LOGIN_FAILED,
+                            user: {}
+                        });
                     }
-                    dispatch({
-                        type: actionTypes.LOGIN_SUCCESS,
-                        user: res.data
-                    });
+                    
                     return resolve(res.data)
                 })
                 .catch(err => {
